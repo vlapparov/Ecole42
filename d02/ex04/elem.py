@@ -1,3 +1,10 @@
+
+# coding: utf-8
+
+# In[120]:
+
+
+# %load elem.py
 #!/usr/bin/python3
 
 
@@ -12,14 +19,30 @@ class Text(str):
         """
         Do you really need a comment to understand this method?..
         """
-        return super().__str__().replace('\n', '\n<br />\n')
+
+#         return super().__str__().replace('\n', '\n<br />\n')
+        new = super().__str__()
+        # new = super().__str__().replace('\n', '\n<br />\n')
+        if(new == '<'):
+            new = new.replace('<', '&lt;')
+        if(new == '>'):
+            new = new.replace('>', '&gt;')
+        if(new == '"'):
+            new = new.replace('"', '&quot;')
+        new = new.replace('\n', '\n<br />\n')
+        return new
 
 
 class Elem:
     """
     Elem will permit us to represent our HTML elements.
     """
-    [...]
+#     [...]
+    class ValidationError(Exception):
+        def __init__(self):
+            self.message = 'Wrong format: this is not a Text or Elem type.'
+        def __str__(self):
+            return self.message
 
     def __init__(self, tag='div', attr={}, content=None, tag_type='double'):
         """
@@ -27,7 +50,19 @@ class Elem:
 
         Obviously.
         """
-        [...]
+#         [...]
+        self.tag = tag
+        self.attr = attr
+        self.content = []
+        self.tag_type = tag_type
+    
+        if(content):
+            self.add_content(content)
+        elif content != None:
+            if not isinstance(content, Text):
+                raise Elem.ValidationError
+
+#         return '<div></div>'
 
     def __str__(self):
         """
@@ -37,9 +72,10 @@ class Elem:
         elements...).
         """
         if self.tag_type == 'double':
-            [...]
+            result = '<' + self.tag + self.__make_attr() + '>' + self.__make_content() + '</' + self.tag + '>'
         elif self.tag_type == 'simple':
-            [...]
+#             [...]
+            result = '<' + self.tag + self.__make_attr() + ' />'
         return result
 
     def __make_attr(self):
@@ -60,7 +96,7 @@ class Elem:
             return ''
         result = '\n'
         for elem in self.content:
-            result += [...]
+            result += '  ' + str(elem).replace('\n', '\n  ') + '\n' 
         return result
 
     def add_content(self, content):
@@ -84,4 +120,16 @@ class Elem:
 
 
 if __name__ == '__main__':
-    [...]
+    print(Elem(tag='html', tag_type='double', 
+          content=[Elem(tag='head', tag_type='double',
+                       content=[Elem(tag='title', tag_type='double', content=Text('Hello ground!'))]), 
+                   Elem(tag='body', tag_type='double',
+                       content=[Elem(tag='h1', tag_type='double', content=Text('Oh no, not again!')),
+                               Elem(tag='img', tag_type='simple', attr={'src':"http://i.imgur.com/pfp3T.jpg"})])]))
+
+
+# In[118]:
+
+
+str(Text('<'))
+
