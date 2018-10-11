@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # In[30]:
-
+import sys
 
 class Intern:
     def __init__(self, a = "My name? I’m nobody, an intern, I have no name."):
@@ -39,6 +39,6 @@ if __name__ == '__main__':
 buddy = Intern('Igor')
 print(buddy.__str__())
 
-first_coffee = Coffee()
+first_coffee = Intern.Coffee()
 first_coffee.__str__()
 
